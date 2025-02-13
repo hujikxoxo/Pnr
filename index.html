@@ -84,40 +84,32 @@
         }
         .message {
             font-size: 24px;
-            margin-top: 20px;
-        }
-        #introMessage {
-            margin-top: 10px;
-            font-size: 18px;
-            line-height: 1.4;
-        }
-        #message {
-            font-size: 24px;
-            margin-top: 40px;
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
         }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <h2 id="introMessage">Готов делать пнр? Тогда жми кнопку и начнем</h2>
+        <h2 class="message" id="message">Готов делать ПНР? Тогда жми кнопку и начнем</h2>
         <button id="actionButton" onclick="startPNR()">Погнали</button>
         <div id="gridContainer" class="hidden">
             <div class="grid" id="grid">
                 <div class="big-square" id="bigSquare">УСПД<br>НАРТИС</div>
             </div>
         </div>
-        <h2 id="message" class="hidden">НАЖМИ НА ВСЕ ПУ ЧТОБЫ ОНИ ПОПАЛИ В УСПД</h2>
     </div>
 
     <script>
         let smallSquares = [];
-        let step = 0;
         let allInBigSquare = false;
+        let restartButton;
 
         function startPNR() {
-            // Скрываем стартовую кнопку и сообщение
-            document.getElementById("introMessage").classList.add("hidden");
+            document.getElementById("message").innerText = "НАЖМИ НА ВСЕ ПУ ЧТОБЫ ОНИ ПОПАЛИ В УСПД";
             document.getElementById("actionButton").classList.add("hidden");
             document.getElementById("gridContainer").classList.remove("hidden");
 
@@ -129,7 +121,6 @@
                 square.style.left = `${Math.random() * 250}px`;
                 square.style.top = `${Math.random() * 250}px`;
 
-                // Маленькие квадраты становятся кнопками только когда это нужно
                 square.onclick = function() {
                     moveSquareToBig(square);
                 };
@@ -137,19 +128,13 @@
                 grid.appendChild(square);
                 smallSquares.push(square);
             }
-
-            setTimeout(() => {
-                document.getElementById("message").classList.remove("hidden");
-            }, 1000);
         }
 
         function moveSquareToBig(square) {
-            // Двигаем квадрат в центр большого квадрата
             square.style.left = "50%";
             square.style.top = "50%";
             square.style.transform = "translate(-50%, -50%)";
 
-            // Проверяем, если все квадраты внутри большого
             checkAllInBigSquare();
         }
 
@@ -203,14 +188,12 @@
                 });
 
                 setTimeout(() => {
-                    let finalMessage = document.createElement("h3");
-                    finalMessage.innerText = "ТЕБЕ НИКТО НЕ ПОВЕРИТ";
-                    document.querySelector(".container").appendChild(finalMessage);
+                    document.getElementById("message").innerText = "ТЕБЕ НИКТО НЕ ПОВЕРИТ";
 
-                    let newButton = document.createElement("button");
-                    newButton.innerText = "НАЧАТЬ ЗАНОВО";
-                    newButton.onclick = restart;
-                    document.querySelector(".container").appendChild(newButton);
+                    restartButton = document.createElement("button");
+                    restartButton.innerText = "НАЧАТЬ ЗАНОВО";
+                    restartButton.onclick = restart;
+                    document.querySelector(".container").appendChild(restartButton);
                 }, 2000);
             }
         }
@@ -221,10 +204,11 @@
                 square.style.top = `${Math.random() * 250}px`;
             });
 
-            document.querySelector("h3").remove();
-            document.querySelector("button").remove();
-
             document.getElementById("message").innerText = "НАЖМИ НА ВСЕ ПУ ЧТОБЫ ОНИ ПОПАЛИ В УСПД";
+
+            if (restartButton) {
+                restartButton.remove();
+            }
         }
     </script>
 
