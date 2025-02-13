@@ -70,12 +70,19 @@
             font-size: 20px;
             font-weight: bold;
             position: absolute;
-            top: 5%;
+            top: 10px;
             left: 50%;
             transform: translateX(-50%);
-            width: 90%;
-            word-wrap: break-word;
-            line-height: 1.4;
+            white-space: nowrap;
+        }
+        .below-message {
+            font-size: 20px;
+            font-weight: bold;
+            position: absolute;
+            top: 160px;
+            left: 50%;
+            transform: translateX(-50%);
+            white-space: nowrap;
         }
         .new-big-square {
             width: 120px;
@@ -90,37 +97,20 @@
             position: absolute;
             right: 10px;
             top: 10px;
-        }
-        .new-message {
-            font-size: 18px;
-            font-weight: bold;
-            position: absolute;
-            right: 50px;
-            top: 140px;
-        }
-        .center-button {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-        }
-        .below-big-square {
-            font-size: 18px;
-            font-weight: bold;
-            margin-top: 140px;
+            transform: translateY(0%);
         }
     </style>
 </head>
 <body>
 
-    <h2 class="message" id="topMessage">Готов делать ПНР?<br>Тогда жми кнопку и начнем</h2>
+    <h2 class="message" id="topMessage">Готов делать ПНР? Тогда жми кнопку и начнем</h2>
     <div class="container">
-        <button id="startButton" class="center-button" onclick="startPNR()">Погнали</button>
+        <button id="startButton" onclick="startPNR()">Погнали</button>
         <div id="gridContainer" class="hidden">
             <div class="grid" id="grid">
                 <div class="big-square" id="bigSquare">УСПД<br>НАРТИС</div>
-                <p id="belowMessage" class="below-big-square hidden">НАЖМИ НА ВСЕ ПУ ЧТОБЫ ОНИ ПОПАЛИ В УСПД</p>
             </div>
+            <h2 class="below-message hidden" id="belowMessage">НАЖМИ НА ВСЕ ПУ ЧТОБЫ ОНИ ПОПАЛИ В УСПД</h2>
         </div>
     </div>
 
@@ -131,6 +121,7 @@
         function startPNR() {
             document.getElementById("startButton").classList.add("hidden");
             document.getElementById("gridContainer").classList.remove("hidden");
+            document.getElementById("topMessage").classList.add("hidden");
             document.getElementById("belowMessage").classList.remove("hidden");
 
             let grid = document.getElementById("grid");
@@ -192,13 +183,8 @@
 
             let newBigSquare = document.createElement("div");
             newBigSquare.classList.add("new-big-square");
-            newBigSquare.innerHTML = "МИРТ-881";
+            newBigSquare.innerHTML = "МИРТ-881<br><span style='font-size:16px;'>ПРИВЕТ))))</span>";
             document.getElementById("gridContainer").appendChild(newBigSquare);
-
-            let newMessage = document.createElement("p");
-            newMessage.classList.add("new-message");
-            newMessage.innerText = "ПРИВЕТ))))";
-            document.getElementById("gridContainer").appendChild(newMessage);
 
             document.getElementById("belowMessage").innerText = "Жми чтобы собрать все ПУ";
             let newButton = document.createElement("button");
@@ -221,6 +207,17 @@
                     square.style.top = `${Math.random() * 250}px`;
                 });
             }
+        }
+
+        function resetGame() {
+            document.getElementById("belowMessage").innerText = "Жми чтобы собрать все ПУ";
+            smallSquares.forEach((square) => {
+                square.style.left = `${Math.random() * 250}px`;
+                square.style.top = `${Math.random() * 250}px`;
+            });
+
+            let restartButton = document.querySelector(".container button:last-child");
+            if (restartButton) restartButton.remove();
         }
     </script>
 
