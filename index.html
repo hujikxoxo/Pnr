@@ -14,13 +14,13 @@
  height: 100vh;
  margin: 0;
  }
-.square {
+ .square {
  width: 20px;
  height: 20px;
  border: 1px solid black;
  position: absolute;
  }
-.big-square {
+ .big-square {
  width: 100px;
  height: 100px;
  border: 1px solid black;
@@ -32,11 +32,11 @@
  justify-content: center;
  align-items: center;
  }
-.text {
+ .text {
  margin-top: 10px;
  display: none;
  }
-.button {
+ .button {
  margin-top: 10px;
  padding: 10px;
  cursor: pointer;
@@ -55,7 +55,7 @@
  display: none;
  }
  #startPnrButton {
- display: block; /* Убедитесь, что кнопка видна */
+ display: block;
  margin-bottom: 20px;
  padding: 10px 20px;
  font-size: 16px;
@@ -106,4 +106,5 @@
  let bigSquare = document.getElementById('uspd-square');
  let squares = document.querySelectorAll('.square');
  squares.forEach(square => {
- square.style.transition = 'left 1s
+ square.style.transition = 'left 1s, top 1s'; // Установить анимацию перемещения
+ square.style.left = `${bigSquare.offset
