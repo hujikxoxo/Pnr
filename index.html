@@ -23,7 +23,7 @@
             margin: 10px;
             border-radius: 10px;
             transition: 0.3s;
-            white-space: nowrap; /* Это гарантирует, что текст не будет переноситься */
+            white-space: nowrap;
         }
         button:hover {
             background-color: gray;
@@ -40,21 +40,21 @@
         .small-square {
             width: 40px;
             height: 40px;
-            border: 2px solid black; /* Контур вместо заливки */
+            border: 2px solid black;
             position: absolute;
-            transition: all 1s ease-in-out;
-            background-color: transparent; /* Убираем заливку */
-            color: black; /* Текст в маленьких квадратах черный */
+            background-color: white;
+            color: black;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: bold;
+            transition: all 1s ease-in-out;
         }
         .big-square {
             width: 120px;
             height: 120px;
-            border: 2px solid black; /* Контур вместо заливки */
-            color: black; /* Черный цвет текста */
+            border: 2px solid black;
+            color: black;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -63,14 +63,14 @@
             left: 50%;
             top: 50%;
             transform: translate(-50%, -50%);
-            background-color: transparent; /* Убираем заливку */
-            transition: border 1s; /* Плавное изменение цвета контура */
+            background-color: white;
+            transition: border 1s; 
         }
         .new-big-square {
             width: 120px;
             height: 120px;
-            border: 2px solid black; /* Контур вместо заливки */
-            color: black; /* Черный цвет текста */
+            border: 2px solid black;
+            color: black;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -79,41 +79,46 @@
             right: 10px;
             top: 50%;
             transform: translateY(-50%);
-            background-color: transparent; /* Убираем заливку */
+            background-color: white;
+        }
+        .message {
+            font-size: 24px;
+            margin-top: 20px;
         }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <button onclick="startPNR()">Начать ПНР</button>
+        <h2 id="introMessage">Готов делать пнр? Тогда жми кнопку и начнем</h2>
+        <button id="actionButton" onclick="startPNR()">Погнали</button>
         <div id="gridContainer" class="hidden">
             <div class="grid" id="grid">
-                <div class="big-square" id="bigSquare">НАРТИС</div> <!-- Добавлена надпись НАРТИС -->
+                <div class="big-square" id="bigSquare">УСПД<br>НАРТИС</div>
             </div>
         </div>
-        <h2 id="message" class="hidden">Ну что смотришь, время делать ПНР</h2>
-        <button id="nextButton" class="hidden" onclick="nextStep()">Начать?</button>
+        <h2 id="message" class="hidden">НАЖМИ НА ВСЕ ПУ ЧТОБЫ ОНИ ПОПАЛИ В УСПД</h2>
+        <button id="nextButton" class="hidden" onclick="moveSquares()">НАЖМИ НА ВСЕ ПУ</button>
     </div>
 
     <script>
         let smallSquares = [];
         let step = 0;
-        let allInBigSquare = false; // Флаг, чтобы проверить, все ли маленькие квадраты внутри большого
+        let allInBigSquare = false;
+        let moveSquareTimeouts = [];
 
         function startPNR() {
-            document.querySelector("button").classList.add("hidden");
+            document.getElementById("introMessage").classList.add("hidden");
+            document.getElementById("actionButton").classList.add("hidden");
             document.getElementById("gridContainer").classList.remove("hidden");
 
             let grid = document.getElementById("grid");
-            for (let i = 0; i < 20; i++) { // Уменьшено количество квадратов до 20
+            for (let i = 0; i < 20; i++) {
                 let square = document.createElement("div");
                 square.classList.add("small-square");
-                square.innerText = "ПУ"; // Надпись в маленьких квадратах
-
-                // Изменил расположение квадратов, чтобы они не перекрывались с первым большим квадратом
-                square.style.left = `${Math.random() * 160}px`;
-                square.style.top = `${Math.random() * 160}px`;
+                square.innerText = "ПУ";
+                square.style.left = `${Math.random() * 250}px`;
+                square.style.top = `${Math.random() * 250}px`;
 
                 grid.appendChild(square);
                 smallSquares.push(square);
@@ -125,43 +130,37 @@
             }, 1000);
         }
 
-        function nextStep() {
-            if (step === 0) {
-                document.getElementById("nextButton").innerText = "Уверен?";
-                step++;
-            } else if (step === 1) {
-                document.getElementById("nextButton").innerText = "Ну ты сам захотел";
-                step++;
-
-                smallSquares.forEach((square, index) => {
-                    setTimeout(() => {
-                        square.style.left = "50%";
-                        square.style.top = "50%";
-                        square.style.transform = "translate(-50%, -50%)";
-                    }, index * 100);
-                });
-
+        function moveSquares() {
+            smallSquares.forEach((square, index) => {
                 setTimeout(() => {
-                    checkAllInBigSquare();
-                    if (allInBigSquare) {
-                        // Если все квадраты внутри большого, меняем цвет контура на зеленый
-                        document.getElementById("bigSquare").style.borderColor = "green";
-                        let congratsMessage = document.createElement("h3");
-                        congratsMessage.innerText = "Ура, ты собрал все пу! Или нет?"; // Появляется сообщение
-                        document.querySelector(".container").appendChild(congratsMessage);
+                    square.style.left = "50%";
+                    square.style.top = "50%";
+                    square.style.transform = "translate(-50%, -50%)";
+                }, index * 100);
+            });
 
-                        // Разлетаются маленькие квадраты
-                        setTimeout(() => {
-                            splitSquares();
-                        }, 2000); // Через 2 секунды маленькие квадраты разлетаются
-                    }
-                }, 2000);
-            }
+            setTimeout(() => {
+                checkAllInBigSquare();
+                if (allInBigSquare) {
+                    document.getElementById("bigSquare").style.borderColor = "green";
+                    document.getElementById("message").innerText = "УРА ТЫ СОБРАЛ ВСЕ ПУ! ИЛИ НЕТ?";
+                    let newBigSquare = document.createElement("div");
+                    newBigSquare.classList.add("new-big-square");
+                    newBigSquare.innerText = "МИРТ-881\nПРИВЕТ))))))";
+                    document.getElementById("gridContainer").appendChild(newBigSquare);
+
+                    setTimeout(() => {
+                        let newButton = document.createElement("button");
+                        newButton.innerText = "ЖМИ СЮДА";
+                        newButton.onclick = shuffleSquares;
+                        document.querySelector(".container").appendChild(newButton);
+                    }, 3000);
+                }
+            }, 2000);
         }
 
         function checkAllInBigSquare() {
             allInBigSquare = smallSquares.every(square => {
-                // Проверяем, что каждый маленький квадрат находится внутри большого
                 let squareRect = square.getBoundingClientRect();
                 let bigSquareRect = document.getElementById("bigSquare").getBoundingClientRect();
 
@@ -174,19 +173,46 @@
             });
         }
 
-        function splitSquares() {
+        function shuffleSquares() {
             smallSquares.forEach((square, index) => {
                 setTimeout(() => {
-                    // Разлет маленьких квадратов
                     square.style.left = `${Math.random() * 250}px`;
                     square.style.top = `${Math.random() * 250}px`;
-                    square.style.transform = "translate(-50%, -50%)";
                 }, index * 100);
             });
 
-            setTimeout(() => {
-                document.getElementById("message").innerText = "ЭТО ПНР СУЧКА, ДАЛЬШЕ ТОЛЬКО ВЫЕЗД";
-            }, 3000);
+            let randomChance = Math.floor(Math.random() * 100);
+            if (randomChance === 0) {
+                smallSquares.forEach(square => {
+                    square.style.left = "50%";
+                    square.style.top = "50%";
+                    square.style.transform = "translate(-50%, -50%)";
+                });
+
+                setTimeout(() => {
+                    let finalMessage = document.createElement("h3");
+                    finalMessage.innerText = "ТЕБЕ НИКТО НЕ ПОВЕРИТ";
+                    document.querySelector(".container").appendChild(finalMessage);
+
+                    let newButton = document.createElement("button");
+                    newButton.innerText = "НАЧАТЬ ЗАНОВО";
+                    newButton.onclick = restart;
+                    document.querySelector(".container").appendChild(newButton);
+                }, 2000);
+            }
+        }
+
+        function restart() {
+            smallSquares.forEach(square => {
+                square.style.left = `${Math.random() * 250}px`;
+                square.style.top = `${Math.random() * 250}px`;
+            });
+
+            document.querySelector("h3").remove();
+            document.querySelector("button").remove();
+
+            document.getElementById("message").innerText = "НАЖМИ НА ВСЕ ПУ ЧТОБЫ ОНИ ПОПАЛИ В УСПД";
+            document.getElementById("nextButton").classList.remove("hidden");
         }
     </script>
 
