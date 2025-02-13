@@ -86,6 +86,9 @@
             font-size: 24px;
             margin-top: 20px;
         }
+        #introMessage {
+            margin-top: 50px;
+        }
     </style>
 </head>
 <body>
@@ -107,6 +110,7 @@
         let allInBigSquare = false;
 
         function startPNR() {
+            // Скрываем стартовую кнопку и сообщение
             document.getElementById("introMessage").classList.add("hidden");
             document.getElementById("actionButton").classList.add("hidden");
             document.getElementById("gridContainer").classList.remove("hidden");
@@ -119,7 +123,7 @@
                 square.style.left = `${Math.random() * 250}px`;
                 square.style.top = `${Math.random() * 250}px`;
 
-                // Только когда кнопка скрыта, маленькие квадраты становятся кнопками
+                // Маленькие квадраты становятся кнопками
                 square.onclick = function() {
                     moveSquareToBig(square);
                 };
@@ -134,11 +138,12 @@
         }
 
         function moveSquareToBig(square) {
+            // Двигаем квадрат в центр большого квадрата
             square.style.left = "50%";
             square.style.top = "50%";
             square.style.transform = "translate(-50%, -50%)";
 
-            // Проводим проверку на попадание квадрата в большой квадрат
+            // Проверяем, если все квадраты внутри большого
             checkAllInBigSquare();
         }
 
