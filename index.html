@@ -49,6 +49,7 @@
             justify-content: center;
             font-weight: bold;
             transition: all 1s ease-in-out;
+            cursor: pointer;
         }
         .big-square {
             width: 120px;
@@ -98,14 +99,12 @@
             </div>
         </div>
         <h2 id="message" class="hidden">НАЖМИ НА ВСЕ ПУ ЧТОБЫ ОНИ ПОПАЛИ В УСПД</h2>
-        <button id="nextButton" class="hidden" onclick="moveSquares()">НАЖМИ НА ВСЕ ПУ</button>
     </div>
 
     <script>
         let smallSquares = [];
         let step = 0;
         let allInBigSquare = false;
-        let moveSquareTimeouts = [];
 
         function startPNR() {
             document.getElementById("introMessage").classList.add("hidden");
@@ -120,43 +119,26 @@
                 square.style.left = `${Math.random() * 250}px`;
                 square.style.top = `${Math.random() * 250}px`;
 
+                square.onclick = function() {
+                    moveSquareToBig(square);
+                };
+
                 grid.appendChild(square);
                 smallSquares.push(square);
             }
 
             setTimeout(() => {
                 document.getElementById("message").classList.remove("hidden");
-                document.getElementById("nextButton").classList.remove("hidden");
             }, 1000);
         }
 
-        function moveSquares() {
-            smallSquares.forEach((square, index) => {
-                setTimeout(() => {
-                    square.style.left = "50%";
-                    square.style.top = "50%";
-                    square.style.transform = "translate(-50%, -50%)";
-                }, index * 100);
-            });
+        function moveSquareToBig(square) {
+            square.style.left = "50%";
+            square.style.top = "50%";
+            square.style.transform = "translate(-50%, -50%)";
 
-            setTimeout(() => {
-                checkAllInBigSquare();
-                if (allInBigSquare) {
-                    document.getElementById("bigSquare").style.borderColor = "green";
-                    document.getElementById("message").innerText = "УРА ТЫ СОБРАЛ ВСЕ ПУ! ИЛИ НЕТ?";
-                    let newBigSquare = document.createElement("div");
-                    newBigSquare.classList.add("new-big-square");
-                    newBigSquare.innerText = "МИРТ-881\nПРИВЕТ))))))";
-                    document.getElementById("gridContainer").appendChild(newBigSquare);
-
-                    setTimeout(() => {
-                        let newButton = document.createElement("button");
-                        newButton.innerText = "ЖМИ СЮДА";
-                        newButton.onclick = shuffleSquares;
-                        document.querySelector(".container").appendChild(newButton);
-                    }, 3000);
-                }
-            }, 2000);
+            // Проводим проверку на попадание квадрата в большой квадрат
+            checkAllInBigSquare();
         }
 
         function checkAllInBigSquare() {
@@ -171,6 +153,25 @@
                     squareRect.bottom <= bigSquareRect.bottom
                 );
             });
+
+            if (allInBigSquare) {
+                document.getElementById("bigSquare").style.borderColor = "green";
+                document.getElementById("message").innerText = "УРА ТЫ СОБРАЛ ВСЕ ПУ! ИЛИ НЕТ?";
+
+                setTimeout(() => {
+                    let newBigSquare = document.createElement("div");
+                    newBigSquare.classList.add("new-big-square");
+                    newBigSquare.innerText = "МИРТ-881\nПРИВЕТ))))))";
+                    document.getElementById("gridContainer").appendChild(newBigSquare);
+
+                    setTimeout(() => {
+                        let newButton = document.createElement("button");
+                        newButton.innerText = "ЖМИ СЮДА";
+                        newButton.onclick = shuffleSquares;
+                        document.querySelector(".container").appendChild(newButton);
+                    }, 3000);
+                }, 2000);
+            }
         }
 
         function shuffleSquares() {
@@ -212,7 +213,6 @@
             document.querySelector("button").remove();
 
             document.getElementById("message").innerText = "НАЖМИ НА ВСЕ ПУ ЧТОБЫ ОНИ ПОПАЛИ В УСПД";
-            document.getElementById("nextButton").classList.remove("hidden");
         }
     </script>
 
