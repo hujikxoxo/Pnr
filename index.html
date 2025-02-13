@@ -44,12 +44,17 @@
             position: absolute;
             transition: all 1s ease-in-out;
             background-color: transparent; /* Убираем заливку */
+            color: black; /* Текст в маленьких квадратах черный */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
         }
         .big-square {
             width: 120px;
             height: 120px;
             border: 2px solid black; /* Контур вместо заливки */
-            color: white;
+            color: black; /* Черный цвет текста */
             display: flex;
             align-items: center;
             justify-content: center;
@@ -64,7 +69,7 @@
             width: 120px;
             height: 120px;
             border: 2px solid black; /* Контур вместо заливки */
-            color: white;
+            color: black; /* Черный цвет текста */
             display: flex;
             align-items: center;
             justify-content: center;
@@ -99,9 +104,10 @@
             document.getElementById("gridContainer").classList.remove("hidden");
 
             let grid = document.getElementById("grid");
-            for (let i = 0; i < 30; i++) {
+            for (let i = 0; i < 20; i++) { // Уменьшено количество квадратов до 20
                 let square = document.createElement("div");
                 square.classList.add("small-square");
+                square.innerText = "ПУ"; // Надпись в маленьких квадратах
 
                 // Изменил расположение квадратов, чтобы они не перекрывались с первым большим квадратом
                 square.style.left = `${Math.random() * 160}px`;
