@@ -11,7 +11,7 @@
             font-family: Arial, sans-serif;
         }
         .container {
-            margin-top: 50px;
+            margin-top: 20px;
         }
         button {
             background-color: black;
@@ -65,7 +65,7 @@
             top: 50%;
             transform: translate(-50%, -50%);
             background-color: white;
-            transition: border 1s; 
+            transition: border 1s;
         }
         .new-big-square {
             width: 120px;
@@ -119,6 +119,7 @@
                 square.style.left = `${Math.random() * 250}px`;
                 square.style.top = `${Math.random() * 250}px`;
 
+                // Только когда кнопка скрыта, маленькие квадраты становятся кнопками
                 square.onclick = function() {
                     moveSquareToBig(square);
                 };
