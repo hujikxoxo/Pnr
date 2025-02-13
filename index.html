@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -6,7 +7,7 @@
  <title>ПНР</title>
  <style>
  body {
- background-color: red;
+ background-color: white;
  display: flex;
  justify-content: center;
  align-items: center;
@@ -14,13 +15,13 @@
  height: 100vh;
  margin: 0;
  }
- .square {
+.square {
  width: 20px;
  height: 20px;
  border: 1px solid black;
  position: absolute;
  }
- .big-square {
+.big-square {
  width: 100px;
  height: 100px;
  border: 1px solid black;
@@ -32,11 +33,11 @@
  justify-content: center;
  align-items: center;
  }
- .text {
+.text {
  margin-top: 10px;
  display: none;
  }
- .button {
+.button {
  margin-top: 10px;
  padding: 10px;
  cursor: pointer;
@@ -45,16 +46,25 @@
  #uspd-square {
  display: none;
  }
+ #startButton {
+ display: none;
+ }
  #returnButton {
  display: none;
  }
  #mirt-square {
  display: none;
  }
+ #startPnrButton {
+ display: block; /* Убедитесь, что кнопка видна */
+ margin-bottom: 20px;
+ padding: 10px 20px;
+ font-size: 16px;
+ }
  </style>
 </head>
 <body>
- <button class="button" onclick="startPnr()">Начать ПНР</button>
+ <button class="button" id="startPnrButton" onclick="startPnr()">Начать ПНР</button>
  <div class="big-square" id="uspd-square">
  <div>УСПД</div>
  </div>
@@ -97,9 +107,4 @@
  let bigSquare = document.getElementById('uspd-square');
  let squares = document.querySelectorAll('.square');
  squares.forEach(square => {
- square.style.transition = 'left 1s, top 1s'; // Установить анимацию перемещения
- square.style.left = `${bigSquare.offsetLeft + 10}px`; // Установить конечное положение по оси X
- square.style.top = `${bigSquare.offsetTop + 10}px`; // Установить конечное положение по оси Y
- });
- document.getElementById('text2').style.display = 'block'; // Показать текст "думаешь ты все сделал?"
- document.getElementById('returnButton').style.display = 'block'; // Показать кнопку
+ square.style.transition = 'left 1s
