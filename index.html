@@ -64,6 +64,7 @@
             top: 50%;
             transform: translate(-50%, -50%);
             background-color: transparent; /* Убираем заливку */
+            transition: border 1s; /* Плавное изменение цвета контура */
         }
         .new-big-square {
             width: 120px;
@@ -142,30 +143,29 @@
                 setTimeout(() => {
                     document.getElementById("message").innerText = "Думаешь ты все сделал?";
                     document.getElementById("nextButton").classList.add("hidden");
-                    let newButton = document.createElement("button");
-                    newButton.innerText = "Ой они что убежали? Нажми на меня если хочешь вернуть их обратно";
-                    newButton.onclick = splitSquares;
-                    document.querySelector(".container").appendChild(newButton);
+
+                    // Изменяем цвет контура большого квадрата на зеленый
+                    document.getElementById("bigSquare").style.borderColor = "green";
+
+                    let congratsMessage = document.createElement("h3");
+                    congratsMessage.innerText = "Ура, ты собрал все пу! Или нет?"; // Появляется сообщение
+                    document.querySelector(".container").appendChild(congratsMessage);
+
+                    // Разлетаются маленькие квадраты
+                    setTimeout(() => {
+                        splitSquares();
+                    }, 2000); // Через 2 секунды маленькие квадраты разлетаются
                 }, 4000);
             }
         }
 
         function splitSquares() {
-            let newBigSquare = document.createElement("div");
-            newBigSquare.classList.add("new-big-square");
-            newBigSquare.innerText = "МИРТ-881"; // Добавлена надпись МИРТ-881
-            document.getElementById("gridContainer").appendChild(newBigSquare);
-
             smallSquares.forEach((square, index) => {
                 setTimeout(() => {
-                    if (index < 10) {
-                        square.style.left = "85%";
-                        square.style.top = "50%";
-                        square.style.transform = "translate(-50%, -50%)";
-                    } else {
-                        square.style.left = `${Math.random() * 250}px`;
-                        square.style.top = `${Math.random() * 250}px`;
-                    }
+                    // Разлет маленьких квадратов
+                    square.style.left = `${Math.random() * 250}px`;
+                    square.style.top = `${Math.random() * 250}px`;
+                    square.style.transform = "translate(-50%, -50%)";
                 }, index * 100);
             });
 
