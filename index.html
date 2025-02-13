@@ -70,19 +70,11 @@
             font-size: 20px;
             font-weight: bold;
             position: absolute;
-            top: 10px;
+            bottom: 90px;
             left: 50%;
             transform: translateX(-50%);
             white-space: nowrap;
-        }
-        .below-message {
-            font-size: 20px;
-            font-weight: bold;
-            position: absolute;
-            top: 160px;
-            left: 50%;
-            transform: translateX(-50%);
-            white-space: nowrap;
+            line-height: 1.4;
         }
         .new-big-square {
             width: 120px;
@@ -104,13 +96,13 @@
 <body>
 
     <h2 class="message" id="topMessage">Готов делать ПНР? Тогда жми кнопку и начнем</h2>
+    <h2 class="message hidden" id="belowMessage">НАЖМИ НА ВСЕ ПУ ЧТОБЫ ОНИ ПОПАЛИ В УСПД</h2>
     <div class="container">
         <button id="startButton" onclick="startPNR()">Погнали</button>
         <div id="gridContainer" class="hidden">
             <div class="grid" id="grid">
                 <div class="big-square" id="bigSquare">УСПД<br>НАРТИС</div>
             </div>
-            <h2 class="below-message hidden" id="belowMessage">НАЖМИ НА ВСЕ ПУ ЧТОБЫ ОНИ ПОПАЛИ В УСПД</h2>
         </div>
     </div>
 
