@@ -99,6 +99,7 @@
     <script>
         let smallSquares = [];
         let step = 0;
+        let allInBigSquare = false; // Флаг, чтобы проверить, все ли маленькие квадраты внутри большого
 
         function startPNR() {
             document.querySelector("button").classList.add("hidden");
@@ -141,22 +142,36 @@
                 });
 
                 setTimeout(() => {
-                    document.getElementById("message").innerText = "Думаешь ты все сделал?";
-                    document.getElementById("nextButton").classList.add("hidden");
+                    checkAllInBigSquare();
+                    if (allInBigSquare) {
+                        // Если все квадраты внутри большого, меняем цвет контура на зеленый
+                        document.getElementById("bigSquare").style.borderColor = "green";
+                        let congratsMessage = document.createElement("h3");
+                        congratsMessage.innerText = "Ура, ты собрал все пу! Или нет?"; // Появляется сообщение
+                        document.querySelector(".container").appendChild(congratsMessage);
 
-                    // Изменяем цвет контура большого квадрата на зеленый
-                    document.getElementById("bigSquare").style.borderColor = "green";
-
-                    let congratsMessage = document.createElement("h3");
-                    congratsMessage.innerText = "Ура, ты собрал все пу! Или нет?"; // Появляется сообщение
-                    document.querySelector(".container").appendChild(congratsMessage);
-
-                    // Разлетаются маленькие квадраты
-                    setTimeout(() => {
-                        splitSquares();
-                    }, 2000); // Через 2 секунды маленькие квадраты разлетаются
-                }, 4000);
+                        // Разлетаются маленькие квадраты
+                        setTimeout(() => {
+                            splitSquares();
+                        }, 2000); // Через 2 секунды маленькие квадраты разлетаются
+                    }
+                }, 2000);
             }
+        }
+
+        function checkAllInBigSquare() {
+            allInBigSquare = smallSquares.every(square => {
+                // Проверяем, что каждый маленький квадрат находится внутри большого
+                let squareRect = square.getBoundingClientRect();
+                let bigSquareRect = document.getElementById("bigSquare").getBoundingClientRect();
+
+                return (
+                    squareRect.left >= bigSquareRect.left &&
+                    squareRect.top >= bigSquareRect.top &&
+                    squareRect.right <= bigSquareRect.right &&
+                    squareRect.bottom <= bigSquareRect.bottom
+                );
+            });
         }
 
         function splitSquares() {
