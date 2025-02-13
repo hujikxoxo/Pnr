@@ -83,7 +83,7 @@
         <button onclick="startPNR()">Начать ПНР</button>
         <div id="gridContainer" class="hidden">
             <div class="grid" id="grid">
-                <div class="big-square" id="bigSquare">УСПД</div>
+                <div class="big-square" id="bigSquare">НАРТИС</div> <!-- Добавлена надпись НАРТИС -->
             </div>
         </div>
         <h2 id="message" class="hidden">Ну что смотришь, время делать ПНР</h2>
@@ -102,8 +102,11 @@
             for (let i = 0; i < 30; i++) {
                 let square = document.createElement("div");
                 square.classList.add("small-square");
-                square.style.left = `${Math.random() * 250}px`;
-                square.style.top = `${Math.random() * 250}px`;
+
+                // Изменил расположение квадратов, чтобы они не перекрывались с первым большим квадратом
+                square.style.left = `${Math.random() * 160}px`;
+                square.style.top = `${Math.random() * 160}px`;
+
                 grid.appendChild(square);
                 smallSquares.push(square);
             }
@@ -144,7 +147,7 @@
         function splitSquares() {
             let newBigSquare = document.createElement("div");
             newBigSquare.classList.add("new-big-square");
-            newBigSquare.innerText = "МИРТ-881";
+            newBigSquare.innerText = "МИРТ-881"; // Добавлена надпись МИРТ-881
             document.getElementById("gridContainer").appendChild(newBigSquare);
 
             smallSquares.forEach((square, index) => {
