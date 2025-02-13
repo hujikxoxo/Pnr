@@ -23,6 +23,7 @@
             margin: 10px;
             border-radius: 10px;
             transition: 0.3s;
+            white-space: nowrap; /* Это гарантирует, что текст не будет переноситься */
         }
         button:hover {
             background-color: gray;
@@ -39,14 +40,15 @@
         .small-square {
             width: 40px;
             height: 40px;
-            background-color: black;
+            border: 2px solid black; /* Контур вместо заливки */
             position: absolute;
             transition: all 1s ease-in-out;
+            background-color: transparent; /* Убираем заливку */
         }
         .big-square {
             width: 120px;
             height: 120px;
-            background-color: black;
+            border: 2px solid black; /* Контур вместо заливки */
             color: white;
             display: flex;
             align-items: center;
@@ -56,11 +58,12 @@
             left: 50%;
             top: 50%;
             transform: translate(-50%, -50%);
+            background-color: transparent; /* Убираем заливку */
         }
         .new-big-square {
             width: 120px;
             height: 120px;
-            background-color: black;
+            border: 2px solid black; /* Контур вместо заливки */
             color: white;
             display: flex;
             align-items: center;
@@ -70,6 +73,7 @@
             right: 10px;
             top: 50%;
             transform: translateY(-50%);
+            background-color: transparent; /* Убираем заливку */
         }
     </style>
 </head>
