@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>ПНР</title>
+ <style>
+ body {
+ background-color: white;
+ display: flex;
+ justify-content: center;
+ align-items: center;
+ flex-direction: column;
+ height: 100vh;
+ margin: 0;
+ }
+ .square {
+ width: 20px;
+ height: 20px;
+ border: 1px solid black;
+ position: absolute;
+ }
+ .big-square {
+ width: 100px;
+ height: 100px;
+ border: 1px solid black;
+ position: absolute;
+ top: 50%;
+ left: 50%;
+ transform: translate(-50%, -50%);
+ display: flex;
+ justify-content: center;
+ align-items: center;
+ }
+ .text {
+ margin-top: 10px;
+ display: none;
+ }
+ .button {
+ margin-top: 10px;
+ padding: 10px;
+ cursor: pointer;
+ display: none;
+ }
+ #uspd-square {
+ display: none;
+ }
+ #returnButton {
+ display: none;
+ }
+ #mirt-square {
+ display: none;
+ }
+ </style>
+</head>
+<body>
+ <button class="button" onclick="startPnr()">Начать ПНР</button>
+ <div class="big-square" id="uspd-square">
+ <div>УСПД</div>
+ </div>
+ <div class="text" id="text1">Ну что смотришь, время делать ПНР</div>
+ <button class="button" id="startButton" onclick="changeButtonText()">Начать?</button>
+ <div class="text" id="text2">думаешь ты все сделал?</div>
+ <button class="button" id="returnButton" onclick="returnSquares()">ой они что убежали? Нажми на меня если хочешь вернуть их обратно</button>
+ <div class="big-square" id="mirt-square">
+ <div>МИРТ-881</div>
+ </div>
+ <div class="text" id="text3">ЭТО ПНР СУЧКА, ДАЛЬШЕ ТОЛЬКО ВЫЕЗД</div>
+
+ <script>
+ function startPnr() {
+ document.getElementById('uspd-square').style.display = 'flex'; // Показать большой квадрат с надписью "УСПД"
+ document.getElementById('text1').style.display = 'block'; // Показать текст "Ну что смотришь, время делать ПНР"
+ document.getElementById('startButton').style.display = 'block'; // Показать кнопку "Начать?"
+ 
+ // Создаем 30 маленьких квадратов и добавляем их на страницу
+ for (let i = 0; i < 30; i++) {
+ let square = document.createElement('div');
+ square.classList.add('square');
+ square.style.left = `${Math.random() * 80}vw`; // Установить случайное положение по оси X
+ square.style.top = `${Math.random() * 80}vh`; // Установить случайное положение по оси Y
+ document.body.appendChild(square); // Добавить квадрат на страницу
+ }
+ }
+
+ function changeButtonText() {
+ let button = document.getElementById('startButton');
+ if (button.textContent === 'Начать?') {
+ button.textContent = 'Уверен?';
+ } else if (button.textContent === 'Уверен?') {
+ button.textContent = 'Ну ты сам захотел';
+ moveSquaresToBigSquare();
+ }
+ }
+
+ function moveSquaresToBigSquare() {
+ let bigSquare = document.getElementById('uspd-square');
+ let squares = document.querySelectorAll('.square');
+ squares.forEach(square => {
+ square.style.transition = 'left 1s, top 1s'; // Установить анимацию перемещения
+ square.style.left = `${bigSquare.offsetLeft + 10}px`; // Установить конечное положение по оси X
+ square.style.top = `${bigSquare.offsetTop + 10}px`; // Установить конечное положение по оси Y
+ });
+ document.getElementById('text2').style.display = 'block'; // Показать текст "думаешь ты все сделал?"
+ document.getElementById('returnButton').style.display = 'block'; // Показать кнопку
