@@ -25,7 +25,7 @@
             background-color: white;
             border: 2px solid black;
             left: 50px;
-            transition: bottom 0.15s ease-out; /* Уменьшено время перехода для еще более быстрого прыжка */
+            transition: bottom 0.1s ease-out; /* Еще более уменьшено время перехода */
         }
         #car::before, #car::after {
             content: '';
@@ -47,8 +47,8 @@
             bottom: -10px;
         }
         .obstacle {
-            width: 40px; /* Уменьшена ширина препятствий */
-            height: 10px; 
+            width: 40px;
+            height: 10px;
             background: #333;
             position: absolute;
             bottom: 0;
@@ -76,9 +76,9 @@
         const car = document.getElementById('car');
         let carPosition = 50;
         let isJumping = false;
-        let gameSpeed = 2 * 1.1; // Увеличение скорости на 10%
+        let gameSpeed = 2 * 1.1 * 1.15; // Увеличение скорости на 10% + еще на 15%
         let obstacles = [];
-        let canCreateObstacle = true; // Флаг для контроля создания препятствий
+        let canCreateObstacle = true;
 
         function createObstacle() {
             if (canCreateObstacle) {
@@ -91,20 +91,20 @@
                 canCreateObstacle = false;
                 setTimeout(() => {
                     canCreateObstacle = true;
-                }, 1500); 
+                }, 1500);
             }
         }
 
         function jump() {
             if (!isJumping) {
                 isJumping = true;
-                let jumpHeight = 200; // Значительно увеличена высота прыжка
+                let jumpHeight = 200; // Высота прыжка остается такой же
                 let jumpCount = 0;
                 let jumpInterval = setInterval(() => {
-                    if (jumpCount < 8) { // Уменьшено время полета вверх для еще более быстрого прыжка
-                        car.style.bottom = (parseInt(car.style.bottom) || 0) + 15 + 'px'; // Увеличена скорость прыжка
-                    } else if (jumpCount < 16) { // Уменьшено общее время прыжка
-                        car.style.bottom = (parseInt(car.style.bottom) || 0) - 15 + 'px'; // Увеличена скорость падения
+                    if (jumpCount < 6) { // Еще более уменьшено время полета вверх для увеличения скорости прыжка
+                        car.style.bottom = (parseInt(car.style.bottom) || 0) + 20 + 'px'; // Увеличена скорость прыжка
+                    } else if (jumpCount < 12) { // Еще более уменьшено общее время прыжка
+                        car.style.bottom = (parseInt(car.style.bottom) || 0) - 20 + 'px'; // Увеличена скорость падения
                     } else {
                         clearInterval(jumpInterval);
                         isJumping = false;
@@ -120,15 +120,15 @@
                 obstaclePosition -= gameSpeed;
                 obstacle.style.left = obstaclePosition + 'px';
 
-                if (obstaclePosition < -40) { // Изменено, чтобы соответствовать новой ширине препятствий
+                if (obstaclePosition < -40) {
                     gameArea.removeChild(obstacle);
                     obstacles.splice(index, 1);
                 }
 
                 let carBottom = parseInt(car.style.bottom) || 0;
                 if (
-                    obstaclePosition < carPosition + 100 &&
-                    obstaclePosition + 40 > carPosition && // Обновлено для новой ширины препятствий
+                    obstaclePosition < carPosition + 90 && // Уменьшен хитбокс для столкновений
+                    obstaclePosition + 40 > carPosition + 10 && // Уменьшен хитбокс для столкновений
                     carBottom < 10  
                 ) {
                     alert('Game Over!');
