@@ -3,217 +3,117 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ПНР в действии</title>
+    <title>Volkswagen Polo Game</title>
     <style>
         body {
-            text-align: center;
-            background-color: white;
-            font-family: Arial, sans-serif;
+            margin: 0;
+            overflow: hidden;
+            background: #f0f0f0;
         }
-        .container {
-            margin-top: 50px;
-        }
-        button {
-            background-color: black;
-            color: white;
-            border: none;
-            padding: 20px 40px;
-            font-size: 22px;
-            cursor: pointer;
-            margin: 20px auto;
-            border-radius: 12px;
-            transition: 0.3s;
-            display: block;
-            width: 250px;
-            text-align: center;
-        }
-        button:hover {
-            background-color: gray;
-        }
-        .hidden {
-            display: none;
-        }
-        .grid {
+        #game {
             position: relative;
-            width: 300px;
-            height: 300px;
-            margin: 20px auto;
+            width: 100%;
+            height: 100vh;
         }
-        .small-square {
-            width: 40px;
-            height: 40px;
+        #car {
+            position: absolute;
+            bottom: 0;
+            width: 100px;
+            height: 50px;
+            background-color: white;
             border: 2px solid black;
-            background-color: white;
-            position: absolute;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            cursor: pointer;
+            left: 50px;
         }
-        .big-square {
-            width: 120px;
-            height: 120px;
-            border: 4px solid black;
-            background-color: white;
-            color: black;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
+        #car::before, #car::after {
+            content: '';
             position: absolute;
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%, -50%);
+            background-color: black;
         }
-        .message {
-            font-size: 20px;
-            font-weight: bold;
-            position: absolute;
-            bottom: 90px;
-            left: 50%;
-            transform: translateX(-50%);
-            white-space: nowrap;
-            word-wrap: break-word;
-            max-width: 230px;
-            line-height: 1.4;
+        #car::before { /* Колеса */
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            left: 10px;
+            bottom: -10px;
         }
-        .new-big-square {
-            width: 120px;
-            height: 120px;
-            border: 4px solid black;
-            background-color: white;
-            color: black;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            position: absolute;
+        #car::after { /* Второе колесо */
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
             right: 10px;
-            top: 10px;
-            transform: translateY(0%);
+            bottom: -10px;
+        }
+        .obstacle {
+            width: 50px;
+            height: 50px;
+            background: #333;
+            position: absolute;
+            bottom: 0;
         }
     </style>
 </head>
 <body>
-
-    <h2 class="message" id="topMessage">Готов делать ПНР?</h2>
-    <h2 class="message hidden" id="belowMessage">Прокликай каждый ПУ</h2>
-    <div class="container">
-        <button id="startButton" onclick="startPNR()">Погнали</button>
-        <div id="gridContainer" class="hidden">
-            <div class="grid" id="grid">
-                <div class="big-square" id="bigSquare">УСПД<br>НАРТИС</div>
-            </div>
-        </div>
+    <div id="game">
+        <div id="car"></div>
     </div>
 
     <script>
-        let smallSquares = [];
-        let allInside = false;
+        const gameArea = document.getElementById('game');
+        const car = document.getElementById('car');
+        let carPosition = 50;
+        let gameSpeed = 2;
+        let obstacles = [];
 
-        function startPNR() {
-            document.getElementById("startButton").classList.add("hidden");
-            document.getElementById("gridContainer").classList.remove("hidden");
-            document.getElementById("topMessage").classList.add("hidden");
-            document.getElementById("belowMessage").classList.remove("hidden");
+        function createObstacle() {
+            let obstacle = document.createElement('div');
+            obstacle.className = 'obstacle';
+            obstacle.style.left = gameArea.clientWidth + 'px';
+            obstacle.style.bottom = Math.floor(Math.random() * (gameArea.clientHeight - 50)) + 'px';
+            gameArea.appendChild(obstacle);
+            obstacles.push(obstacle);
+        }
 
-            let grid = document.getElementById("grid");
-            for (let i = 0; i < 15; i++) {
-                let square = document.createElement("div");
-                square.classList.add("small-square");
-                square.innerText = "ПУ";
-                square.style.left = `${Math.random() * 250}px`;
-                square.style.top = `${Math.random() * 250}px`;
-                square.onclick = () => moveToBigSquare(square);
-                grid.appendChild(square);
-                smallSquares.push(square);
+        function moveCar(event) {
+            switch(event.keyCode) {
+                case 37: // Left arrow
+                    if (carPosition > 0) carPosition -= 10;
+                    break;
+                case 39: // Right arrow
+                    if (carPosition < gameArea.clientWidth - 100) carPosition += 10;
+                    break;
             }
+            car.style.left = carPosition + 'px';
         }
 
-        function moveToBigSquare(square) {
-            let bigSquare = document.getElementById("bigSquare");
-            let bigSquareRect = bigSquare.getBoundingClientRect();
+        function updateGame() {
+            obstacles.forEach((obstacle, index) => {
+                let obstaclePosition = parseInt(obstacle.style.left);
+                obstaclePosition -= gameSpeed;
+                obstacle.style.left = obstaclePosition + 'px';
 
-            square.style.left = `${bigSquareRect.left + 40}px`;
-            square.style.top = `${bigSquareRect.top + 40}px`;
-            square.style.transform = "translate(-50%, -50%)";
-            square.onclick = null; 
+                if (obstaclePosition < -50) {
+                    gameArea.removeChild(obstacle);
+                    obstacles.splice(index, 1);
+                }
 
-            setTimeout(checkIfAllInside, 500);
-        }
-
-        function checkIfAllInside() {
-            let bigSquare = document.getElementById("bigSquare");
-            let bigSquareRect = bigSquare.getBoundingClientRect();
-            let countInside = 0;
-
-            smallSquares.forEach((square) => {
-                let rect = square.getBoundingClientRect();
+                // Проверка на столкновение (упрощенная)
                 if (
-                    rect.left >= bigSquareRect.left &&
-                    rect.right <= bigSquareRect.right &&
-                    rect.top >= bigSquareRect.top &&
-                    rect.bottom <= bigSquareRect.bottom
+                    obstaclePosition < carPosition + 100 &&
+                    obstaclePosition + 50 > carPosition &&
+                    parseInt(obstacle.style.bottom) < 50 // Высота машины
                 ) {
-                    countInside++;
+                    alert('Game Over!');
+                    document.removeEventListener('keydown', moveCar);
+                    clearInterval(gameLoop);
                 }
             });
 
-            if (countInside === smallSquares.length) {
-                allInside = true;
-                bigSquare.style.border = "4px solid green";
-                document.getElementById("belowMessage").innerText = "УРА ТЫ СОБРАЛ ВСЕ ПУ! ИЛИ НЕТ?";
-                setTimeout(scatterSmallSquares, 2000);
-            }
+            if (Math.random() > 0.98) createObstacle();
         }
 
-        function scatterSmallSquares() {
-            if (!allInside) return;
-            smallSquares.forEach((square) => {
-                square.style.left = `${Math.random() * 250}px`;
-                square.style.top = `${Math.random() * 250}px`;
-            });
+        document.addEventListener('keydown', moveCar);
 
-            let newBigSquare = document.createElement("div");
-            newBigSquare.classList.add("new-big-square");
-            newBigSquare.innerHTML = "МИРТ-881<br><span style='font-size:16px;'>ПРИВЕТ))))</span>";
-            document.getElementById("gridContainer").appendChild(newBigSquare);
-
-            document.getElementById("belowMessage").innerText = "Жми чтобы собрать все ПУ";
-            let newButton = document.createElement("button");
-            newButton.innerText = "ЖАТЬ СЮДА";
-            newButton.onclick = shuffleSmallSquares;
-            document.querySelector(".container").appendChild(newButton);
-        }
-
-        function shuffleSmallSquares() {
-            let chance = Math.random() * 100;
-            if (chance < 1) {
-                document.getElementById("belowMessage").innerText = "ТЕБЕ НИКТО НЕ ПОВЕРИТ";
-                let restartButton = document.createElement("button");
-                restartButton.innerText = "НАЧАТЬ ЗАНОВО";
-                restartButton.onclick = resetGame;
-                document.querySelector(".container").appendChild(restartButton);
-            } else {
-                smallSquares.forEach((square) => {
-                    square.style.left = `${Math.random() * 250}px`;
-                    square.style.top = `${Math.random() * 250}px`;
-                });
-            }
-        }
-
-        function resetGame() {
-            document.getElementById("belowMessage").innerText = "Жми чтобы собрать все ПУ";
-            smallSquares.forEach((square) => {
-                square.style.left = `${Math.random() * 250}px`;
-                square.style.top = `${Math.random() * 250}px`;
-            });
-
-            let restartButton = document.querySelector(".container button:last-child");
-            if (restartButton) restartButton.remove();
-        }
+        let gameLoop = setInterval(updateGame, 20);
     </script>
-
 </body>
 </html>
