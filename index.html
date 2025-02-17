@@ -25,7 +25,7 @@
             background-color: white;
             border: 2px solid black;
             left: 50px;
-            transition: bottom 0.2s ease-out;
+            transition: bottom 0.15s ease-out; /* Уменьшено время перехода для еще более быстрого прыжка */
         }
         #car::before, #car::after {
             content: '';
@@ -47,8 +47,8 @@
             bottom: -10px;
         }
         .obstacle {
-            width: 50px;
-            height: 10px; /* Дополнительно уменьшена высота препятствия */
+            width: 40px; /* Уменьшена ширина препятствий */
+            height: 10px; 
             background: #333;
             position: absolute;
             bottom: 0;
@@ -88,23 +88,23 @@
                 obstacle.style.bottom = 0;
                 gameArea.appendChild(obstacle);
                 obstacles.push(obstacle);
-                canCreateObstacle = false; // Запрещаем создание следующего препятствия сразу после текущего
+                canCreateObstacle = false;
                 setTimeout(() => {
-                    canCreateObstacle = true; // Разрешаем создание нового препятствия через некоторое время
-                }, 1500); // Увеличено расстояние между преградами, увеличив задержку до 1.5 секунд
+                    canCreateObstacle = true;
+                }, 1500); 
             }
         }
 
         function jump() {
             if (!isJumping) {
                 isJumping = true;
-                let jumpHeight = 150; // Увеличена высота прыжка
+                let jumpHeight = 200; // Значительно увеличена высота прыжка
                 let jumpCount = 0;
                 let jumpInterval = setInterval(() => {
-                    if (jumpCount < 10) { // Уменьшено время полета вверх для более быстрого прыжка
-                        car.style.bottom = (parseInt(car.style.bottom) || 0) + 10 + 'px'; // Увеличена скорость прыжка
-                    } else if (jumpCount < 20) { // Уменьшено общее время прыжка
-                        car.style.bottom = (parseInt(car.style.bottom) || 0) - 10 + 'px'; // Увеличена скорость падения
+                    if (jumpCount < 8) { // Уменьшено время полета вверх для еще более быстрого прыжка
+                        car.style.bottom = (parseInt(car.style.bottom) || 0) + 15 + 'px'; // Увеличена скорость прыжка
+                    } else if (jumpCount < 16) { // Уменьшено общее время прыжка
+                        car.style.bottom = (parseInt(car.style.bottom) || 0) - 15 + 'px'; // Увеличена скорость падения
                     } else {
                         clearInterval(jumpInterval);
                         isJumping = false;
@@ -120,17 +120,16 @@
                 obstaclePosition -= gameSpeed;
                 obstacle.style.left = obstaclePosition + 'px';
 
-                if (obstaclePosition < -50) {
+                if (obstaclePosition < -40) { // Изменено, чтобы соответствовать новой ширине препятствий
                     gameArea.removeChild(obstacle);
                     obstacles.splice(index, 1);
                 }
 
-                // Проверка на столкновение (упрощенная)
                 let carBottom = parseInt(car.style.bottom) || 0;
                 if (
                     obstaclePosition < carPosition + 100 &&
-                    obstaclePosition + 50 > carPosition &&
-                    carBottom < 10  // Новая высота препятствия
+                    obstaclePosition + 40 > carPosition && // Обновлено для новой ширины препятствий
+                    carBottom < 10  
                 ) {
                     alert('Game Over!');
                     document.removeEventListener('keydown', jump);
@@ -139,13 +138,13 @@
                 }
             });
 
-            if (Math.random() > 0.99 && canCreateObstacle) createObstacle(); // Снижена вероятность появления преграды
+            if (Math.random() > 0.99 && canCreateObstacle) createObstacle();
         }
 
         function handleInput(event) {
             if (event.type === 'keydown' && event.keyCode === 32 || event.type === 'touchstart') {
                 jump();
-                event.preventDefault(); // Предотвращение скроллинга на мобильных устройствах
+                event.preventDefault();
             }
         }
 
