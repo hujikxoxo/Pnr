@@ -23,6 +23,7 @@
             background-color: white;
             border: 2px solid black;
             left: 50px;
+            transition: bottom 0.3s ease-out;
         }
         #car::before, #car::after {
             content: '';
@@ -61,37 +62,36 @@
         const gameArea = document.getElementById('game');
         const car = document.getElementById('car');
         let carPosition = 50;
+        let isJumping = false;
         let gameSpeed = 2;
         let obstacles = [];
-        let touchStartX = 0;
 
         function createObstacle() {
             let obstacle = document.createElement('div');
             obstacle.className = 'obstacle';
             obstacle.style.left = gameArea.clientWidth + 'px';
-            obstacle.style.bottom = Math.floor(Math.random() * (gameArea.clientHeight - 50)) + 'px';
+            obstacle.style.bottom = 0;
             gameArea.appendChild(obstacle);
             obstacles.push(obstacle);
         }
 
-        function moveCar(event) {
-            if (event.type === 'keydown') {
-                switch(event.keyCode) {
-                    case 37: // Left arrow
-                        if (carPosition > 0) carPosition -= 10;
-                        break;
-                    case 39: // Right arrow
-                        if (carPosition < gameArea.clientWidth - 100) carPosition += 10;
-                        break;
-                }
+        function jump() {
+            if (!isJumping) {
+                isJumping = true;
+                let jumpHeight = 100; // Высота прыжка
+                let jumpCount = 0;
+                let jumpInterval = setInterval(() => {
+                    if (jumpCount < 15) { // Время полета вверх
+                        car.style.bottom = (parseInt(car.style.bottom) || 0) + 5 + 'px';
+                    } else if (jumpCount < 30) { // Время падения
+                        car.style.bottom = (parseInt(car.style.bottom) || 0) - 5 + 'px';
+                    } else {
+                        clearInterval(jumpInterval);
+                        isJumping = false;
+                    }
+                    jumpCount++;
+                }, 20);
             }
-            else if (event.type === 'touchmove') {
-                let touch = event.touches[0];
-                let deltaX = touch.pageX - touchStartX;
-                carPosition = Math.max(0, Math.min(carPosition + deltaX, gameArea.clientWidth - 100));
-                touchStartX = touch.pageX;
-            }
-            car.style.left = carPosition + 'px';
         }
 
         function updateGame() {
@@ -106,14 +106,15 @@
                 }
 
                 // Проверка на столкновение (упрощенная)
+                let carBottom = parseInt(car.style.bottom) || 0;
                 if (
                     obstaclePosition < carPosition + 100 &&
                     obstaclePosition + 50 > carPosition &&
-                    parseInt(obstacle.style.bottom) < 50 // Высота машины
+                    carBottom < 50  // Высота препятствия
                 ) {
                     alert('Game Over!');
-                    document.removeEventListener('keydown', moveCar);
-                    document.removeEventListener('touchmove', moveCar);
+                    document.removeEventListener('keydown', jump);
+                    document.removeEventListener('touchstart', jump);
                     clearInterval(gameLoop);
                 }
             });
@@ -121,9 +122,15 @@
             if (Math.random() > 0.98) createObstacle();
         }
 
-        document.addEventListener('keydown', moveCar);
-        document.addEventListener('touchstart', (e) => { touchStartX = e.touches[0].pageX; });
-        document.addEventListener('touchmove', moveCar);
+        function handleInput(event) {
+            if (event.type === 'keydown' && event.keyCode === 32 || event.type === 'touchstart') {
+                jump();
+                event.preventDefault(); // Предотвращение скроллинга на мобильных устройствах
+            }
+        }
+
+        document.addEventListener('keydown', handleInput);
+        document.addEventListener('touchstart', handleInput);
 
         let gameLoop = setInterval(updateGame, 20);
     </script>
