@@ -63,6 +63,7 @@
         let carPosition = 50;
         let gameSpeed = 2;
         let obstacles = [];
+        let touchStartX = 0;
 
         function createObstacle() {
             let obstacle = document.createElement('div');
@@ -74,13 +75,21 @@
         }
 
         function moveCar(event) {
-            switch(event.keyCode) {
-                case 37: // Left arrow
-                    if (carPosition > 0) carPosition -= 10;
-                    break;
-                case 39: // Right arrow
-                    if (carPosition < gameArea.clientWidth - 100) carPosition += 10;
-                    break;
+            if (event.type === 'keydown') {
+                switch(event.keyCode) {
+                    case 37: // Left arrow
+                        if (carPosition > 0) carPosition -= 10;
+                        break;
+                    case 39: // Right arrow
+                        if (carPosition < gameArea.clientWidth - 100) carPosition += 10;
+                        break;
+                }
+            }
+            else if (event.type === 'touchmove') {
+                let touch = event.touches[0];
+                let deltaX = touch.pageX - touchStartX;
+                carPosition = Math.max(0, Math.min(carPosition + deltaX, gameArea.clientWidth - 100));
+                touchStartX = touch.pageX;
             }
             car.style.left = carPosition + 'px';
         }
@@ -104,6 +113,7 @@
                 ) {
                     alert('Game Over!');
                     document.removeEventListener('keydown', moveCar);
+                    document.removeEventListener('touchmove', moveCar);
                     clearInterval(gameLoop);
                 }
             });
@@ -112,6 +122,8 @@
         }
 
         document.addEventListener('keydown', moveCar);
+        document.addEventListener('touchstart', (e) => { touchStartX = e.touches[0].pageX; });
+        document.addEventListener('touchmove', moveCar);
 
         let gameLoop = setInterval(updateGame, 20);
     </script>
