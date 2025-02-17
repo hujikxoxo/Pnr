@@ -46,7 +46,7 @@
         }
         .obstacle {
             width: 50px;
-            height: 30px; /* Уменьшена высота препятствия */
+            height: 20px; /* Еще более уменьшена высота препятствия */
             background: #333;
             position: absolute;
             bottom: 0;
@@ -57,7 +57,7 @@
             left: 50%;
             transform: translate(-50%, -50%);
             font-family: Arial, sans-serif;
-            font-size: 10px; /* Подобрано так, чтобы текст поместился в машину */
+            font-size: 10px;
             white-space: nowrap;
         }
     </style>
@@ -76,14 +76,21 @@
         let isJumping = false;
         let gameSpeed = 2 * 1.1; // Увеличение скорости на 10%
         let obstacles = [];
+        let canCreateObstacle = true; // Флаг для контроля создания препятствий
 
         function createObstacle() {
-            let obstacle = document.createElement('div');
-            obstacle.className = 'obstacle';
-            obstacle.style.left = gameArea.clientWidth + 'px';
-            obstacle.style.bottom = 0;
-            gameArea.appendChild(obstacle);
-            obstacles.push(obstacle);
+            if (canCreateObstacle) {
+                let obstacle = document.createElement('div');
+                obstacle.className = 'obstacle';
+                obstacle.style.left = gameArea.clientWidth + 'px';
+                obstacle.style.bottom = 0;
+                gameArea.appendChild(obstacle);
+                obstacles.push(obstacle);
+                canCreateObstacle = false; // Запрещаем создание следующего препятствия сразу после текущего
+                setTimeout(() => {
+                    canCreateObstacle = true; // Разрешаем создание нового препятствия через некоторое время
+                }, 1000); // Задержка в 1 секунду перед возможностью создания новой преграды
+            }
         }
 
         function jump() {
@@ -121,7 +128,7 @@
                 if (
                     obstaclePosition < carPosition + 100 &&
                     obstaclePosition + 50 > carPosition &&
-                    carBottom < 30  // Новая высота препятствия
+                    carBottom < 20  // Новая высота препятствия
                 ) {
                     alert('Game Over!');
                     document.removeEventListener('keydown', jump);
@@ -130,7 +137,7 @@
                 }
             });
 
-            if (Math.random() > 0.98) createObstacle();
+            if (Math.random() > 0.98 && canCreateObstacle) createObstacle();
         }
 
         function handleInput(event) {
