@@ -46,16 +46,27 @@
         }
         .obstacle {
             width: 50px;
-            height: 50px;
+            height: 30px; /* Уменьшена высота препятствия */
             background: #333;
             position: absolute;
             bottom: 0;
+        }
+        #carText {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: Arial, sans-serif;
+            font-size: 10px; /* Подобрано так, чтобы текст поместился в машину */
+            white-space: nowrap;
         }
     </style>
 </head>
 <body>
     <div id="game">
-        <div id="car"></div>
+        <div id="car">
+            <div id="carText">Серегин WW</div>
+        </div>
     </div>
 
     <script>
@@ -63,7 +74,7 @@
         const car = document.getElementById('car');
         let carPosition = 50;
         let isJumping = false;
-        let gameSpeed = 2;
+        let gameSpeed = 2 * 1.1; // Увеличение скорости на 10%
         let obstacles = [];
 
         function createObstacle() {
@@ -110,7 +121,7 @@
                 if (
                     obstaclePosition < carPosition + 100 &&
                     obstaclePosition + 50 > carPosition &&
-                    carBottom < 50  // Высота препятствия
+                    carBottom < 30  // Новая высота препятствия
                 ) {
                     alert('Game Over!');
                     document.removeEventListener('keydown', jump);
